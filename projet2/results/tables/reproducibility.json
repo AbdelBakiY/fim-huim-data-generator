@@ -1,0 +1,22 @@
+{
+  "recall": {
+    "mean": 0.4,
+    "std": 0.2496,
+    "variance_pct": 62.41
+  },
+  "powerlaw_alpha": {
+    "mean": 1.371,
+    "std": 0.0507,
+    "variance_pct": 3.7
+  },
+  "skewness": {
+    "mean": 2.2722,
+    "std": 0.3423,
+    "variance_pct": 15.07
+  },
+  "avg_length_err": {
+    "mean": 1.448,
+    "std": 1.0238,
+    "variance_pct": 70.7
+  }
+}

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Accueil{% endblock %}
+{% block content %}
+
+<div class="mb-5">
+  <h1 class="fw-bold" style="color:#58a6ff">Générateur de données transactionnelles</h1>
+  <p class="text-secondary fs-5">Génération synthétique FIM/HUIM · Validation statistique · Expériences OFAT · Comparaison d'algorithmes</p>
+</div>
+
+<div class="row g-4 mb-5">
+  <div class="col-6 col-md-3">
+    <div class="card text-center p-4">
+      <div class="stat-num text-primary">{{ fim_count }}</div>
+      <div class="text-secondary mt-1">Datasets FIM</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card text-center p-4">
+      <div class="stat-num text-success">{{ huim_count }}</div>
+      <div class="text-secondary mt-1">Datasets HUIM</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card text-center p-4">
+      <div class="stat-num text-warning">{{ figure_count }}</div>
+      <div class="text-secondary mt-1">Figures</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card text-center p-4">
+      <div class="stat-num text-info">{{ table_count }}</div>
+      <div class="text-secondary mt-1">Tables JSON</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-6 col-lg-3">
+    <div class="card h-100 p-3">
+      <div class="mb-2 fs-4 text-primary"><i class="bi bi-database-fill-add"></i></div>
+      <h5>Générer</h5>
+      <p class="text-secondary small flex-grow-1">Créer des datasets FIM ou HUIM avec paramètres contrôlés et motifs plantés (ground truth).</p>
+      <a href="/generate" class="btn btn-primary btn-sm mt-2">Générer un dataset</a>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card h-100 p-3">
+      <div class="mb-2 fs-4 text-success"><i class="bi bi-check2-circle"></i></div>
+      <h5>Valider</h5>
+      <p class="text-secondary small flex-grow-1">Vérifier les propriétés structurelles, statistiques et la cohérence ground truth.</p>
+      <a href="/validate" class="btn btn-success btn-sm mt-2">Valider un dataset</a>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card h-100 p-3">
+      <div class="mb-2 fs-4 text-warning"><i class="bi bi-bar-chart-line-fill"></i></div>
+      <h5>Expériences</h5>
+      <p class="text-secondary small flex-grow-1">Lancer OFAT, comparer FP-Growth/Eclat et FHM/IHUP, tester la reproductibilité.</p>
+      <a href="/experiments" class="btn btn-warning btn-sm mt-2">Lancer</a>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <div class="card h-100 p-3">
+      <div class="mb-2 fs-4 text-info"><i class="bi bi-images"></i></div>
+      <h5>Résultats</h5>
+      <p class="text-secondary small flex-grow-1">Visualiser les 8 figures générées et les tables de résultats JSON.</p>
+      <a href="/results" class="btn btn-info btn-sm mt-2">Voir les résultats</a>
+    </div>
+  </div>
+</div>
+
+<div class="mt-5 p-3 card">
+  <h6 class="text-secondary mb-3">Workflow recommandé</h6>
+  <div class="d-flex flex-wrap gap-2 align-items-center">
+    <span class="badge bg-primary">1. Générer</span>
+    <i class="bi bi-arrow-right text-secondary"></i>
+    <span class="badge bg-success">2. Valider</span>
+    <i class="bi bi-arrow-right text-secondary"></i>
+    <span class="badge bg-warning text-dark">3. OFAT</span>
+    <i class="bi bi-arrow-right text-secondary"></i>
+    <span class="badge bg-info text-dark">4. Comparaison</span>
+    <i class="bi bi-arrow-right text-secondary"></i>
+    <span class="badge bg-secondary">5. Figures</span>
+  </div>
+</div>
+
+{% endblock %}

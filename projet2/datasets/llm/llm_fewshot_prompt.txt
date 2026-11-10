@@ -1,0 +1,19 @@
+Here are example transactions from a transactional dataset (items 1 to 20):
+
+1 5 3 7
+2 8
+4 3 7 9 11 15 2 1 5 8
+1 3 7 5 2 8 9
+5 2 1
+1 7 3 5 9 2 8 11 4 15 6
+3 1 5
+2 7 1 5 3 8
+
+Notice the pattern:
+- Low-numbered items (1, 3, 5, 7) appear very frequently
+- High-numbered items appear rarely
+- Most transactions are short, a few are long
+
+Generate 100 more transactions following exactly the same statistical pattern.
+Use item IDs 1 to 20 only. Average length should be around 5.
+Output only the transactions, one per line, space-separated integers. No other text.

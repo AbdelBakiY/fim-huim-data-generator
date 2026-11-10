@@ -1,0 +1,242 @@
+{
+  "delta": [
+    {
+      "value": 452,
+      "n_huis": 226925,
+      "runtime_ms": 1668,
+      "recall": 1.0
+    },
+    {
+      "value": 1356,
+      "n_huis": 226925,
+      "runtime_ms": 1076,
+      "recall": 1.0
+    },
+    {
+      "value": 2260,
+      "n_huis": 226925,
+      "runtime_ms": 1406,
+      "recall": 1.0
+    },
+    {
+      "value": 4521,
+      "n_huis": 226925,
+      "runtime_ms": 1671,
+      "recall": 1.0
+    },
+    {
+      "value": 9042,
+      "n_huis": 226925,
+      "runtime_ms": 1097,
+      "recall": 1.0
+    }
+  ],
+  "Q_max": [
+    {
+      "value": 2,
+      "total_utility": 225946,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 316,
+      "runtime_ms": 580,
+      "recall": 1.0
+    },
+    {
+      "value": 5,
+      "total_utility": 452119,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 298,
+      "runtime_ms": 787,
+      "recall": 1.0
+    },
+    {
+      "value": 10,
+      "total_utility": 832088,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 286,
+      "runtime_ms": 627,
+      "recall": 1.0
+    },
+    {
+      "value": 20,
+      "total_utility": 1589744,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 285,
+      "runtime_ms": 588,
+      "recall": 1.0
+    },
+    {
+      "value": 50,
+      "total_utility": 3910674,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 276,
+      "runtime_ms": 716,
+      "recall": 1.0
+    }
+  ],
+  "decouple_ratio": [
+    {
+      "value": 0.0,
+      "total_utility": 452119,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 298,
+      "runtime_ms": 800,
+      "recall": 1.0
+    },
+    {
+      "value": 0.1,
+      "total_utility": 452119,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 298,
+      "runtime_ms": 1334,
+      "recall": 1.0
+    },
+    {
+      "value": 0.25,
+      "total_utility": 452119,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 298,
+      "runtime_ms": 760,
+      "recall": 1.0
+    },
+    {
+      "value": 0.5,
+      "total_utility": 452119,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 298,
+      "runtime_ms": 859,
+      "recall": 1.0
+    },
+    {
+      "value": 0.8,
+      "total_utility": 452119,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 298,
+      "runtime_ms": 624,
+      "recall": 1.0
+    }
+  ],
+  "profit_max": [
+    {
+      "value": 10,
+      "total_utility": 61591,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 14,
+      "non_trivial": false,
+      "n_huis": 2209253,
+      "runtime_ms": 4827,
+      "recall": 1.0
+    },
+    {
+      "value": 25,
+      "total_utility": 126361,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 10,
+      "non_trivial": false,
+      "n_huis": 44594,
+      "runtime_ms": 982,
+      "recall": 1.0
+    },
+    {
+      "value": 50,
+      "total_utility": 236459,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 3152,
+      "runtime_ms": 709,
+      "recall": 1.0
+    },
+    {
+      "value": 100,
+      "total_utility": 452119,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 298,
+      "runtime_ms": 829,
+      "recall": 1.0
+    },
+    {
+      "value": 200,
+      "total_utility": 888836,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 15,
+      "runtime_ms": 740,
+      "recall": 0.0
+    }
+  ],
+  "num_transactions": [
+    {
+      "value": 200,
+      "total_utility": 91250,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 11,
+      "non_trivial": false,
+      "n_huis": 127,
+      "runtime_ms": 528,
+      "recall": 1.0
+    },
+    {
+      "value": 500,
+      "total_utility": 226156,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 208,
+      "runtime_ms": 537,
+      "recall": 1.0
+    },
+    {
+      "value": 1000,
+      "total_utility": 452119,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 12,
+      "non_trivial": false,
+      "n_huis": 298,
+      "runtime_ms": 702,
+      "recall": 1.0
+    },
+    {
+      "value": 2000,
+      "total_utility": 898487,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 11,
+      "non_trivial": false,
+      "n_huis": 310,
+      "runtime_ms": 687,
+      "recall": 1.0
+    },
+    {
+      "value": 5000,
+      "total_utility": 2261264,
+      "B_rare_hui": 0,
+      "C_frequent_cheap": 11,
+      "non_trivial": false,
+      "n_huis": 367,
+      "runtime_ms": 870,
+      "recall": 1.0
+    }
+  ]
+}

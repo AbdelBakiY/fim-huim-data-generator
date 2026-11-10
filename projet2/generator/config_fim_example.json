@@ -1,0 +1,15 @@
+{
+  "num_transactions": 1000,
+  "num_items": 200,
+  "avg_length": 8,
+  "density": 0.04,
+  "ground_truth": [
+    {"itemset": [3, 17, 42], "target_support": 0.25},
+    {"itemset": [5, 99], "target_support": 0.10},
+    {"itemset": [12, 55, 88, 101], "target_support": 0.15},
+    {"itemset": [170], "target_support": 0.40},
+    {"itemset": [23, 67], "target_support": 0.08}
+  ],
+  "noise_ratio": 0.15,
+  "output_format": "spmf"
+}

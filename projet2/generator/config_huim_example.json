@@ -1,0 +1,24 @@
+{
+  "num_transactions": 1000,
+  "num_items": 200,
+  "avg_length": 8,
+  "density": 0.04,
+  "ground_truth": [
+    {"itemset": [3, 17, 42], "target_support": 0.20},
+    {"itemset": [5, 99], "target_support": 0.08}
+  ],
+  "noise_ratio": 0.15,
+  "output_format": "spmf",
+  "huim": {
+    "profit_distribution": "power_law",
+    "profit_range": [1, 100],
+    "quantity_distribution": "uniform",
+    "quantity_range": [1, 5],
+    "min_utility_threshold": 500,
+    "decouple_ratio": 0.30,
+    "ground_truth_huis": [
+      {"itemset": [3, 17], "target_utility": 620},
+      {"itemset": [99], "target_utility": 810}
+    ]
+  }
+}

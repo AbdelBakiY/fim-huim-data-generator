@@ -1,0 +1,37 @@
+[
+  {
+    "delta": 2260,
+    "fhm_n": 298,
+    "fhm_ms": 741,
+    "ihup_n": 298,
+    "ihup_ms": 3796
+  },
+  {
+    "delta": 4521,
+    "fhm_n": 14,
+    "fhm_ms": 635,
+    "ihup_n": 14,
+    "ihup_ms": 958
+  },
+  {
+    "delta": 6781,
+    "fhm_n": 0,
+    "fhm_ms": 582,
+    "ihup_n": 0,
+    "ihup_ms": 698
+  },
+  {
+    "delta": 9042,
+    "fhm_n": 0,
+    "fhm_ms": 585,
+    "ihup_n": 0,
+    "ihup_ms": 641
+  },
+  {
+    "delta": 13563,
+    "fhm_n": 0,
+    "fhm_ms": 573,
+    "ihup_n": 0,
+    "ihup_ms": 608
+  }
+]

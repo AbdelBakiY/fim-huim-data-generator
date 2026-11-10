@@ -1,0 +1,8 @@
+# Core (générateur, validation, interface web, figures)
+flask>=3.0
+numpy>=1.26
+matplotlib>=3.8
+
+# Optionnel — comparaison LLM (llm/compare.py)
+huggingface_hub>=0.24
+ollama>=0.3

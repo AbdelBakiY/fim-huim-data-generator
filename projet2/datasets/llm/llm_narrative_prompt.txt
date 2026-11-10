@@ -1,0 +1,19 @@
+You are a data scientist generating a synthetic transactional dataset for frequent itemset mining research.
+
+Requirements:
+- 100 transactions total
+- 20 unique items (IDs 1 to 20)
+- Average transaction length: 5 items
+- Density: ~0.25 (average items per transaction / total items)
+- Item popularity must follow a power-law distribution: a few items appear very frequently (items 1-5), most appear rarely (items 15-20)
+- Transaction lengths must follow a log-normal distribution: most transactions are short (2-6 items), a few are long (15+ items)
+- Noise ratio: ~0.1 (some randomness in which items co-occur)
+Embed these frequent patterns: items [1,5,3] in ~25% of transactions; items [7,2] in ~20% of transactions.
+
+Output format: one transaction per line, space-separated integer item IDs.
+Output ONLY the transactions — no explanations, no headers, no numbering.
+
+Example:
+1 5 3 7
+2 8 15 4 1 9
+4 3 7 9 11 15 2 1 5 8

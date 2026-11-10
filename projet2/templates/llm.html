@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% block title %}LLM{% endblock %}
+
+{% block content %}
+<h4 class="mb-4"><i class="bi bi-robot"></i> Comparaison LLM vs Générateur Classique</h4>
+
+<div class="row g-4">
+
+  <!-- Formulaire -->
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header"><i class="bi bi-sliders"></i> Paramètres</div>
+      <div class="card-body">
+        <form method="POST" id="llmForm">
+
+          <div class="mb-3">
+            <label class="form-label">Backend</label>
+            <select name="backend" class="form-select" id="backendSelect">
+              <option value="hf">HuggingFace (API)</option>
+              <option value="ollama">Ollama (local)</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Modèle</label>
+            <select name="model" class="form-select" id="modelSelect">
+              <option value="meta-llama/Llama-3.3-70B-Instruct">LLaMA 3.3 70B</option>
+              <option value="meta-llama/Llama-3.1-8B-Instruct">LLaMA 3.1 8B</option>
+              <option value="Qwen/Qwen2.5-7B-Instruct">Qwen 2.5 7B</option>
+              <option value="Qwen/Qwen2.5-72B-Instruct">Qwen 2.5 72B</option>
+              <option value="deepseek-ai/DeepSeek-R1">DeepSeek R1</option>
+              <option value="deepseek-ai/DeepSeek-R1-Distill-Qwen-7B">DeepSeek R1 Distill 7B</option>
+            </select>
+          </div>
+
+          <div class="mb-3" id="hfTokenDiv">
+            <label class="form-label">Token HuggingFace</label>
+            <input type="password" name="hf_token" class="form-control" placeholder="hf_xxx...">
+            <div class="form-text text-secondary">Obtenir sur huggingface.co/settings/tokens</div>
+          </div>
+
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" name="skip_llm" id="skipLlm">
+            <label class="form-check-label" for="skipLlm">
+              Réutiliser datasets existants<br>
+              <small class="text-secondary">(ne rappelle pas l'API, relance seulement SPMF)</small>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-play-fill"></i> Lancer la comparaison
+          </button>
+        </form>
+
+        {% if task_id %}
+        <div class="mt-3" id="taskStatus">
+          <div class="d-flex align-items-center gap-2 text-warning">
+            <div class="spinner-border spinner-border-sm"></div>
+            <span>Comparaison en cours...</span>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Prompts info -->
+    <div class="card mt-4">
+      <div class="card-header"><i class="bi bi-chat-text"></i> Les 4 variants de prompt</div>
+      <div class="card-body p-0">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" style="background:#161b22;border-color:#30363d">
+            <strong>Minimal</strong>
+            <div class="text-secondary small">Instructions courtes, pas de contexte</div>
+          </li>
+          <li class="list-group-item" style="background:#161b22;border-color:#30363d">
+            <strong>Narrative</strong>
+            <div class="text-secondary small">Contexte détaillé + contraintes statistiques</div>
+          </li>
+          <li class="list-group-item" style="background:#161b22;border-color:#30363d">
+            <strong>Few-shot</strong>
+            <div class="text-secondary small">8 exemples de transactions, apprentissage par imitation</div>
+          </li>
+          <li class="list-group-item" style="background:#161b22;border-color:#30363d">
+            <strong>Iteratif</strong>
+            <div class="text-secondary small">2 appels API : distribution → transactions</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Résultats -->
+  <div class="col-lg-8">
+
+    {% if existing %}
+    <!-- Tableau de comparaison -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-table"></i> Résultats — {{ existing.model }}</span>
+        <span class="badge bg-secondary">{{ existing.config.num_transactions }} tx / {{ existing.config.num_items }} items</span>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-dark table-hover mb-0" style="border-color:#30363d">
+            <thead style="background:#21262d">
+              <tr>
+                <th>Variant</th>
+                <th class="text-center">n_tx</th>
+                <th class="text-center">Alpha</th>
+                <th class="text-center">Alpha OK</th>
+                <th class="text-center">Skewness</th>
+                <th class="text-center">Recall</th>
+                <th class="text-center">Temps (s)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Classical -->
+              {% set c = existing.classical %}
+              <tr style="border-top:2px solid #58a6ff">
+                <td><strong class="text-info">Classical</strong></td>
+                <td class="text-center">{{ c.n_transactions }}</td>
+                <td class="text-center">{{ c.alpha }}</td>
+                <td class="text-center">
+                  {% if c.alpha_ok %}<i class="bi bi-check-circle-fill badge-ok"></i>
+                  {% else %}<i class="bi bi-x-circle-fill badge-fail"></i>{% endif %}
+                </td>
+                <td class="text-center">{{ c.skewness }}</td>
+                <td class="text-center">
+                  {% if c.recall is not none %}
+                    <span class="{% if c.recall >= 0.8 %}badge-ok{% else %}badge-fail{% endif %}">{{ c.recall }}</span>
+                  {% else %}—{% endif %}
+                </td>
+                <td class="text-center">{{ c.elapsed_s }}</td>
+              </tr>
+              <!-- LLM variants -->
+              {% for name, r in existing.llm.items() %}
+              <tr>
+                <td>
+                  <span class="badge" style="background:#21262d;color:#e6edf3">{{ name }}</span>
+                </td>
+                {% if r.error is defined %}
+                  <td colspan="6" class="text-danger small">{{ r.error }}</td>
+                {% else %}
+                  <td class="text-center">{{ r.n_transactions }}</td>
+                  <td class="text-center">{{ r.alpha }}</td>
+                  <td class="text-center">
+                    {% if r.alpha_ok %}<i class="bi bi-check-circle-fill badge-ok"></i>
+                    {% else %}<i class="bi bi-x-circle-fill badge-fail"></i>{% endif %}
+                  </td>
+                  <td class="text-center">{{ r.skewness if r.skewness else '—' }}</td>
+                  <td class="text-center">
+                    {% if r.recall is not none %}
+                      <span class="{% if r.recall >= 0.8 %}badge-ok{% else %}badge-fail{% endif %}">{{ r.recall }}</span>
+                    {% else %}—{% endif %}
+                  </td>
+                  <td class="text-center">{{ r.elapsed_s }}</td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Figure -->
+    {% if llm_fig %}
+    <div class="card">
+      <div class="card-header"><i class="bi bi-bar-chart-line"></i> Figure comparative</div>
+      <div class="card-body text-center">
+        <img src="/figures/llm_comparison.png" class="img-fluid rounded" style="max-height:450px">
+      </div>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="card">
+      <div class="card-body text-center py-5 text-secondary">
+        <i class="bi bi-robot" style="font-size:3rem"></i>
+        <p class="mt-3">Aucun résultat disponible.<br>Lance une comparaison avec le formulaire.</p>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if task_id %}
+<script>
+const taskId = "{{ task_id }}";
+const poll = setInterval(() => {
+  fetch(`/api/task/${taskId}`)
+    .then(r => r.json())
+    .then(d => {
+      if (d.status === "done") {
+        clearInterval(poll);
+        location.reload();
+      } else if (d.status === "error") {
+        clearInterval(poll);
+        document.getElementById("taskStatus").innerHTML =
+          `<div class="alert alert-danger mt-2"><pre>${d.output}</pre></div>`;
+      }
+    });
+}, 2000);
+</script>
+{% endif %}
+<script>
+document.getElementById("backendSelect").addEventListener("change", function() {
+  document.getElementById("hfTokenDiv").style.display =
+    this.value === "hf" ? "block" : "none";
+});
+</script>
+{% endblock %}

@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block title %}Valider{% endblock %}
+{% block content %}
+
+<h2 class="fw-bold mb-4"><i class="bi bi-check-circle text-success"></i> Valider un dataset</h2>
+
+{% if error %}
+<div class="alert alert-danger"><i class="bi bi-exclamation-triangle"></i> {{ error }}</div>
+{% endif %}
+
+<form method="POST" class="mb-5">
+  <div class="card">
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label fw-bold">Sélectionner un dataset</label>
+        <select name="dat_path" class="form-select">
+          {% if fim_dats %}
+          <optgroup label="── FIM ──">
+            {% for d in fim_dats %}
+            <option value="{{ d }}">FIM › {{ d.parent.name }} › {{ d.name }}</option>
+            {% endfor %}
+          </optgroup>
+          {% endif %}
+          {% if huim_dats %}
+          <optgroup label="── HUIM ──">
+            {% for d in huim_dats %}
+            <option value="{{ d }}">HUIM › {{ d.parent.name }} › {{ d.name }}</option>
+            {% endfor %}
+          </optgroup>
+          {% endif %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-success"><i class="bi bi-play-fill"></i> Valider</button>
+    </div>
+  </div>
+</form>
+
+{% if report %}
+<h4 class="mb-3">Rapport : <span class="text-secondary fw-normal">{{ report.dataset }}</span></h4>
+<div class="row g-3">
+
+  <!-- Structural -->
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header"><i class="bi bi-rulers"></i> Structural Check</div>
+      <div class="card-body">
+        {% for key, v in report.structural.items() %}
+        {% if v is mapping %}
+        <div class="d-flex justify-content-between align-items-center mb-2 small">
+          <span class="text-secondary">{{ key }}</span>
+          <span>
+            {{ v.actual }} <span class="text-secondary">/ {{ v.target }}</span>
+            &nbsp;<span class="{{ 'badge-ok' if v.ok else 'badge-fail' }}">
+              <i class="bi bi-{{ 'check-circle' if v.ok else 'x-circle' }}"></i>
+              {{ v.error_pct }}%
+            </span>
+          </span>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistical -->
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header"><i class="bi bi-graph-up"></i> Statistical Check</div>
+      <div class="card-body">
+        {% set s = report.statistical %}
+        <div class="small mb-2">
+          <span class="text-secondary">Power-law alpha :</span>
+          <strong>{{ s.powerlaw_alpha }}</strong>
+          <span class="{{ 'badge-ok' if s.alpha_in_range_1_5_to_3_0 else 'badge-fail' }} ms-1">
+            <i class="bi bi-{{ 'check-circle' if s.alpha_in_range_1_5_to_3_0 else 'x-circle' }}"></i>
+            [1.5–3.0]
+          </span>
+          <small class="text-secondary">(R²={{ s.powerlaw_r2 }})</small>
+        </div>
+        <div class="small">
+          <span class="text-secondary">Asymétrie longueurs :</span>
+          <strong>{{ s.length_skewness }}</strong>
+          <span class="{{ 'badge-ok' if s.length_right_skewed else 'badge-fail' }} ms-1">
+            <i class="bi bi-{{ 'check-circle' if s.length_right_skewed else 'x-circle' }}"></i>
+            right-skewed
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ground Truth -->
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header"><i class="bi bi-bullseye"></i> Ground Truth Check</div>
+      <div class="card-body">
+        {% set gt = report.groundtruth %}
+        {% if gt.get('error') %}
+          <span class="text-secondary small">{{ gt.error }}</span>
+        {% else %}
+          {% for p in gt.get('patterns', []) %}
+          <div class="d-flex justify-content-between small mb-1">
+            <span class="text-secondary font-monospace">{{ p.itemset }}</span>
+            <span>
+              {{ p.measured_support }} <span class="text-secondary">/ {{ p.target_support }}</span>
+              <span class="{{ 'badge-ok' if p.ok else 'badge-fail' }} ms-1">
+                <i class="bi bi-{{ 'check-circle' if p.ok else 'x-circle' }}"></i>
+              </span>
+            </span>
+          </div>
+          {% endfor %}
+          <div class="mt-2 pt-2 border-top small">
+            Recall : <strong>{{ gt.recall }}</strong>
+            <span class="{{ 'badge-ok' if gt.recall_ok else 'badge-fail' }} ms-1">
+              <i class="bi bi-{{ 'check-circle' if gt.recall_ok else 'x-circle' }}"></i> ≥ 0.80
+            </span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- HUIM Utility -->
+  {% if report.get('huim_utility') %}
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header"><i class="bi bi-currency-euro"></i> HUIM Utility</div>
+      <div class="card-body small">
+        {% set hu = report.huim_utility %}
+        <div class="mb-2">Utilité totale : <strong>{{ hu.total_utility }}</strong></div>
+        <div class="mb-2">
+          Profits intacts :
+          <span class="{{ 'badge-ok' if hu.profit_integrity_ok else 'badge-fail' }}">
+            <i class="bi bi-{{ 'check-circle' if hu.profit_integrity_ok else 'x-circle' }}"></i>
+          </span>
+        </div>
+        {% for r in hu.get('hui_measures', []) %}
+        <div class="text-secondary">{{ r.itemset }} → freq={{ r.frequency }}, util={{ r.utility }}</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 80/20 -->
+  {% if report.get('profit_80_20') %}
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header"><i class="bi bi-pie-chart"></i> Règle 80/20</div>
+      <div class="card-body small">
+        {% set p80 = report.profit_80_20 %}
+        <div>Top 10% articles → <strong>{{ (p80.top_10pct_share * 100)|round(1) }}%</strong> du profit total</div>
+        <div class="mt-2">
+          Passe le test (>60%) :
+          <span class="{{ 'badge-ok' if p80.passes_80_20 else 'badge-fail' }}">
+            <i class="bi bi-{{ 'check-circle' if p80.passes_80_20 else 'x-circle' }}"></i>
+            {{ 'Oui' if p80.passes_80_20 else 'Non' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Decoupling -->
+  {% if report.get('decoupling') %}
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header"><i class="bi bi-table"></i> Table de découplage</div>
+      <div class="card-body">
+        {% set dc = report.decoupling %}
+        <table class="table table-sm table-dark text-center mb-2">
+          <thead><tr><th></th><th>Profitable</th><th>Pas cher</th></tr></thead>
+          <tbody>
+            <tr><th>Fréquent</th><td class="text-info">{{ dc.A_frequent_hui }}</td><td class="text-warning">{{ dc.C_frequent_cheap }}</td></tr>
+            <tr><th>Rare</th><td class="text-success">{{ dc.B_rare_hui }}</td><td class="text-secondary">{{ dc.D_rare_cheap }}</td></tr>
+          </tbody>
+        </table>
+        <div class="small">
+          Non-trivial (B>0 et C>0) :
+          <span class="{{ 'badge-ok' if dc.non_trivial else 'badge-fail' }}">
+            <i class="bi bi-{{ 'check-circle' if dc.non_trivial else 'x-circle' }}"></i>
+            {{ 'Oui' if dc.non_trivial else 'Non' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endif %}
+
+{% endblock %}

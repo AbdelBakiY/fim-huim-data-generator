@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block title %}Générer{% endblock %}
+{% block content %}
+
+<h2 class="fw-bold mb-4"><i class="bi bi-plus-circle text-primary"></i> Générer un dataset</h2>
+
+{% if error %}
+<div class="alert alert-danger"><i class="bi bi-exclamation-triangle"></i> {{ error }}</div>
+{% endif %}
+
+{% if result %}
+<div class="alert alert-success mb-4">
+  <h6 class="fw-bold"><i class="bi bi-check-circle"></i> Dataset {{ result.type }} généré avec succès</h6>
+  <div class="row mt-2 g-2">
+    <div class="col-auto"><span class="badge bg-secondary">Transactions : {{ result.n }}</span></div>
+    <div class="col-auto"><span class="badge bg-secondary">Longueur moy. : {{ result.avg_len }}</span></div>
+    {% if result.type == 'FIM' %}
+    <div class="col-auto"><span class="badge bg-secondary">Densité : {{ result.density }}</span></div>
+    {% else %}
+    <div class="col-auto"><span class="badge bg-secondary">Utilité totale : {{ result.total_util }}</span></div>
+    {% endif %}
+  </div>
+  <small class="text-secondary mt-1 d-block">Fichier : {{ result.dat }}</small>
+</div>
+{% endif %}
+
+<form method="POST">
+  <!-- Type selector -->
+  <div class="card mb-4">
+    <div class="card-body d-flex align-items-center gap-4">
+      <span class="fw-bold">Type :</span>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="mode" id="modeFIM" value="fim" checked onchange="toggleHUIM()">
+        <label class="form-check-label" for="modeFIM"><i class="bi bi-diagram-3"></i> FIM — Frequent Itemset Mining</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="mode" id="modeHUIM" value="huim" onchange="toggleHUIM()">
+        <label class="form-check-label" for="modeHUIM"><i class="bi bi-currency-euro"></i> HUIM — High Utility Itemset Mining</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Base params -->
+    <div class="col-lg-5">
+      <div class="card h-100">
+        <div class="card-header">Paramètres de base</div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label small">Préfixe du fichier</label>
+            <input type="text" class="form-control" name="prefix" value="dataset">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Seed (reproductibilité)</label>
+            <input type="number" class="form-control" name="seed" value="42">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Nombre de transactions</label>
+            <input type="number" class="form-control" name="num_transactions" value="1000" min="100">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Nombre d'articles (vocabulaire)</label>
+            <input type="number" class="form-control" name="num_items" value="50" min="10">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Longueur moyenne des transactions</label>
+            <input type="number" class="form-control" name="avg_length" value="8" step="0.5" min="2">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Densité (0–1)</label>
+            <input type="number" class="form-control" name="density" value="0.16" step="0.01" min="0.01" max="1">
+          </div>
+          <div class="mb-0">
+            <label class="form-label small">Ratio de bruit (0–1)</label>
+            <input type="number" class="form-control" name="noise_ratio" value="0.15" step="0.05" min="0" max="0.5">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-7">
+      <!-- Ground truth -->
+      <div class="card mb-4">
+        <div class="card-header">Motifs plantés <span class="text-secondary fw-normal small">(ground truth)</span></div>
+        <div class="card-body">
+          <div class="row g-1 mb-1">
+            <div class="col-7 text-secondary small">Itemset (IDs séparés par virgules)</div>
+            <div class="col-3 text-secondary small">Support cible</div>
+          </div>
+          <div id="gt_list">
+            <div class="row g-2 mb-2 gt-row">
+              <div class="col-7"><input type="text" class="form-control form-control-sm" name="gt_itemset[]" placeholder="ex: 3,17,42"></div>
+              <div class="col-3"><input type="number" class="form-control form-control-sm" name="gt_support[]" value="0.20" step="0.01" min="0.01" max="1"></div>
+              <div class="col-2"><button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="removeGT(this)">✕</button></div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addGT()"><i class="bi bi-plus"></i> Ajouter</button>
+        </div>
+      </div>
+
+      <!-- HUIM params -->
+      <div class="card" id="huimCard" style="display:none">
+        <div class="card-header">Paramètres HUIM</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="form-label small">Profit min</label>
+              <input type="number" class="form-control form-control-sm" name="profit_min" value="1" min="1">
+            </div>
+            <div class="col-6">
+              <label class="form-label small">Profit max</label>
+              <input type="number" class="form-control form-control-sm" name="profit_max" value="100" min="1">
+            </div>
+            <div class="col-6">
+              <label class="form-label small">Quantité min</label>
+              <input type="number" class="form-control form-control-sm" name="qty_min" value="1" min="1">
+            </div>
+            <div class="col-6">
+              <label class="form-label small">Quantité max</label>
+              <input type="number" class="form-control form-control-sm" name="qty_max" value="5" min="1">
+            </div>
+            <div class="col-6">
+              <label class="form-label small">Seuil utilité min</label>
+              <input type="number" class="form-control form-control-sm" name="min_utility" value="500">
+            </div>
+            <div class="col-6">
+              <label class="form-label small">Decouple ratio</label>
+              <input type="number" class="form-control form-control-sm" name="decouple_ratio" value="0.30" step="0.05" min="0" max="1">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4 d-flex gap-3 align-items-center">
+    <button type="submit" class="btn btn-primary px-4">
+      <i class="bi bi-play-fill"></i> Générer le dataset
+    </button>
+    <a href="/validate" class="btn btn-outline-secondary btn-sm">Valider ensuite →</a>
+  </div>
+</form>
+
+{% endblock %}
+{% block scripts %}
+<script>
+function toggleHUIM() {
+  document.getElementById('huimCard').style.display =
+    document.getElementById('modeHUIM').checked ? 'block' : 'none';
+}
+function addGT() {
+  const div = document.createElement('div');
+  div.className = 'row g-2 mb-2 gt-row';
+  div.innerHTML = `
+    <div class="col-7"><input type="text" class="form-control form-control-sm" name="gt_itemset[]" placeholder="ex: 5,12"></div>
+    <div class="col-3"><input type="number" class="form-control form-control-sm" name="gt_support[]" value="0.15" step="0.01" min="0.01" max="1"></div>
+    <div class="col-2"><button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="removeGT(this)">✕</button></div>`;
+  document.getElementById('gt_list').appendChild(div);
+}
+function removeGT(btn) {
+  const rows = document.querySelectorAll('.gt-row');
+  if (rows.length > 1) btn.closest('.gt-row').remove();
+}
+</script>
+{% endblock %}

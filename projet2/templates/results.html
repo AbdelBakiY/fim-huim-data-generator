@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Résultats{% endblock %}
+{% block content %}
+
+<h2 class="fw-bold mb-4"><i class="bi bi-images text-info"></i> Résultats</h2>
+
+<!-- Figures -->
+<h5 class="mb-3">Figures <span class="badge bg-secondary">{{ figures|length }}</span></h5>
+{% if figures %}
+<div class="row g-3 mb-5">
+  {% for fig in figures %}
+  <div class="col-md-6 col-lg-4 figure-card">
+    <div class="card">
+      <img src="/figures/{{ fig.name }}" class="card-img-top" alt="{{ fig.stem }}"
+           onclick="openFull('/figures/{{ fig.name }}', '{{ fig.stem }}')"
+           style="cursor:zoom-in; object-fit:contain; max-height:220px; background:#0d1117">
+      <div class="card-footer small text-center text-secondary py-1">{{ fig.stem.replace('_',' ') }}</div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-secondary mb-5">
+  <i class="bi bi-info-circle"></i> Aucune figure — allez dans <a href="/experiments" class="alert-link">Expériences</a> et lancez <code>plot.py</code>.
+</div>
+{% endif %}
+
+<!-- Tables -->
+<h5 class="mb-3">Tables JSON <span class="badge bg-secondary">{{ tables|length }}</span></h5>
+{% if tables %}
+{% for name, data in tables.items() %}
+<div class="card mb-3">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span><i class="bi bi-file-earmark-code"></i> {{ name }}.json</span>
+    <button class="btn btn-sm btn-outline-secondary" onclick="toggle('tbl_{{ name }}')">
+      Afficher / Masquer
+    </button>
+  </div>
+  <div id="tbl_{{ name }}" style="display:none">
+    <pre class="m-0 rounded-0 border-0 border-top" style="border-top:1px solid #30363d!important">{{ data | tojson(indent=2) }}</pre>
+  </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="alert alert-secondary">
+  <i class="bi bi-info-circle"></i> Aucune table — lancez d'abord les expériences OFAT et la comparaison.
+</div>
+{% endif %}
+
+<!-- Lightbox -->
+<div class="modal fade" id="imgModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content" style="background:#0d1117;border:1px solid #30363d">
+      <div class="modal-header border-0 pb-0">
+        <h6 class="modal-title text-secondary" id="imgTitle"></h6>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center p-2">
+        <img id="modalImg" src="" class="img-fluid" style="max-height:80vh">
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+function openFull(src, title) {
+  document.getElementById('modalImg').src = src;
+  document.getElementById('imgTitle').textContent = title.replace(/_/g,' ');
+  new bootstrap.Modal(document.getElementById('imgModal')).show();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,39 @@
+You are building a transactional dataset with 20 items (IDs 1 to 20).
+
+Step 1: Define a power-law frequency distribution for the 20 items.
+Item 1 should be the most frequent (~25% of transactions), item 20 the least frequent (~1%).
+
+Output ONLY a JSON object mapping item IDs to probabilities that sum to 1.0.
+Example format: {"1": 0.12, "2": 0.09, ..., "20": 0.01}
+---
+Using this item frequency distribution:
+```json
+{
+  "1": 0.253,
+  "2": 0.151,
+  "3": 0.096,
+  "4": 0.064,
+  "5": 0.043,
+  "6": 0.029,
+  "7": 0.019,
+  "8": 0.013,
+  "9": 0.009,
+  "10": 0.006,
+  "11": 0.004,
+  "12": 0.003,
+  "13": 0.002,
+  "14": 0.001,
+  "15": 0.001,
+  "16": 0.001,
+  "17": 0.001,
+  "18": 0.001,
+  "19": 0.001,
+  "20": 0.01
+}
+```
+
+Step 2: Generate 100 transactions.
+- Sample transaction length from a log-normal distribution (mean=5)
+- For each transaction, sample items without replacement according to their frequency
+
+Output ONLY the transactions, one per line, space-separated item IDs. No other text.

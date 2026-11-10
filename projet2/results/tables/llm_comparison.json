@@ -1,0 +1,104 @@
+{
+  "backend": "hf",
+  "model": "meta-llama/Llama-3.3-70B-Instruct",
+  "config": {
+    "num_transactions": 100,
+    "num_items": 20,
+    "avg_length": 5,
+    "density": 0.25,
+    "noise_ratio": 0.1,
+    "ground_truth": [
+      {
+        "itemset": [
+          1,
+          5,
+          3
+        ],
+        "target_support": 0.25
+      },
+      {
+        "itemset": [
+          7,
+          2
+        ],
+        "target_support": 0.2
+      }
+    ]
+  },
+  "classical": {
+    "n_transactions": 100,
+    "elapsed_s": 0.023,
+    "alpha": 1.525,
+    "alpha_ok": true,
+    "r2": 0.881,
+    "skewness": 1.937,
+    "right_skewed": true,
+    "avg_length_err": 10.0,
+    "avg_length_ok": false,
+    "recall": 1.0,
+    "n_patterns": 327,
+    "spmf_ms": 1177
+  },
+  "llm": {
+    "minimal": {
+      "n_transactions": 21,
+      "elapsed_s": 2.65,
+      "alpha": 0.23,
+      "alpha_ok": false,
+      "r2": 0.622,
+      "skewness": 0.0,
+      "right_skewed": false,
+      "avg_length_err": 0.0,
+      "avg_length_ok": true,
+      "dat_path": "datasets/llm/llm_minimal.dat",
+      "recall": 0.5,
+      "n_patterns": 110,
+      "spmf_ms": 884
+    },
+    "narrative": {
+      "n_transactions": 131,
+      "elapsed_s": 4.59,
+      "alpha": 0.804,
+      "alpha_ok": false,
+      "r2": 0.899,
+      "skewness": 0.569,
+      "right_skewed": false,
+      "avg_length_err": 56.18,
+      "avg_length_ok": false,
+      "dat_path": "datasets/llm/llm_narrative.dat",
+      "recall": 1.0,
+      "n_patterns": 3495,
+      "spmf_ms": 664
+    },
+    "fewshot": {
+      "n_transactions": 112,
+      "elapsed_s": 4.38,
+      "alpha": 0.489,
+      "alpha_ok": false,
+      "r2": 0.641,
+      "skewness": -0.233,
+      "right_skewed": false,
+      "avg_length_err": 71.43,
+      "avg_length_ok": false,
+      "dat_path": "datasets/llm/llm_fewshot.dat",
+      "recall": 1.0,
+      "n_patterns": 4095,
+      "spmf_ms": 594
+    },
+    "iterative": {
+      "n_transactions": 98,
+      "elapsed_s": 4.37,
+      "alpha": 1.61,
+      "alpha_ok": true,
+      "r2": 0.69,
+      "skewness": 1.134,
+      "right_skewed": true,
+      "avg_length_err": 58.37,
+      "avg_length_ok": false,
+      "dat_path": "datasets/llm/llm_iterative.dat",
+      "recall": 1.0,
+      "n_patterns": 32767,
+      "spmf_ms": 744
+    }
+  }
+}

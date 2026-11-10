@@ -1,0 +1,4 @@
+Generate 100 transactions in SPMF format.
+Items: integers from 1 to 20.
+Average transaction length: 5.
+Output: one transaction per line, space-separated item IDs only. No other text.
